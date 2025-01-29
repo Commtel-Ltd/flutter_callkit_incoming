@@ -436,25 +436,26 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         NotificationCenter.default.post(name: AVAudioSession.interruptionNotification, object: self, userInfo: userInfo)
     }
     
-    func configurAudioSession(){
-        if data?.configureAudioSession != false {
-            let session = AVAudioSession.sharedInstance()
-            do{
-                try session.setCategory(AVAudioSession.Category.playAndRecord, options: [
-                    .allowBluetoothA2DP,
-                    .duckOthers,
-                    .allowBluetooth,
-                ])
-                
-                try session.setMode(self.getAudioSessionMode(data?.audioSessionMode))
-                try session.setActive(data?.audioSessionActive ?? true)
-                try session.setPreferredSampleRate(data?.audioSessionPreferredSampleRate ?? 44100.0)
-                try session.setPreferredIOBufferDuration(data?.audioSessionPreferredIOBufferDuration ?? 0.005)
-            }catch{
-                print(error)
-            }
-        }
+    func configurAudioSession() {
+    // Check if the app should configure the audio session
+    if data?.configureAudioSession == false {
+        return
     }
+
+    let session = AVAudioSession.sharedInstance()
+    do {
+        // Set the audio session category to allow app-specific audio handling
+        try session.setCategory(.playAndRecord, options: [.allowBluetooth, .allowBluetoothA2DP])
+
+        // Set the audio session mode to 'voiceChat' for VoIP applications
+        try session.setMode(.voiceChat)
+
+        // Activate the audio session
+        try session.setActive(true)
+    } catch {
+        print("Error configuring audio session: \(error)")
+    }
+}
     
     func getAudioSessionMode(_ audioSessionMode: String?) -> AVAudioSession.Mode {
         var mode = AVAudioSession.Mode.default
