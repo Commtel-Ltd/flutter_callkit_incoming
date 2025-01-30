@@ -461,21 +461,6 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             }
         }
     }
-
-    let session = AVAudioSession.sharedInstance()
-    do {
-        // Set the audio session category to allow app-specific audio handling
-        try session.setCategory(.playAndRecord, options: [.allowBluetooth, .allowBluetoothA2DP])
-
-        // Set the audio session mode to 'voiceChat' for VoIP applications
-        try session.setMode(.voiceChat)
-
-        // Activate the audio session
-        try session.setActive(true)
-    } catch {
-        print("Error configuring audio session: \(error)")
-    }
-}
     
     func getAudioSessionMode(_ audioSessionMode: String?) -> AVAudioSession.Mode {
         var mode = AVAudioSession.Mode.default
