@@ -213,8 +213,7 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             result("OK")
             break
         default:
-            result(FlutterMethodNotImplemented)
-        }
+            result(FlutterMethodNotImplemented)        }
     }
     
     @objc public func setDevicePushTokenVoIP(_ deviceToken: String) {
@@ -240,16 +239,21 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
             self.data = data
         }
         
+        if let extraDict = data.extra as? [String: Any],
+           let extraDuration = extraDict["duration"] as? Int {
+            data.duration = extraDuration
+        }
+        
         var handle: CXHandle?
         handle = CXHandle(type: self.getHandleType(data.handleType), value: data.getEncryptHandle())
         
         let callUpdate = CXCallUpdate()
         callUpdate.remoteHandle = handle
-        callUpdate.supportsDTMF = data.supportsDTMF
-        callUpdate.supportsHolding = data.supportsHolding
-        callUpdate.supportsGrouping = data.supportsGrouping
-        callUpdate.supportsUngrouping = data.supportsUngrouping
-        callUpdate.hasVideo = data.type > 0 ? true : false
+        callUpdate.supportsDTMF = true
+        callUpdate.supportsHolding = false
+        callUpdate.supportsGrouping = false
+        callUpdate.supportsUngrouping = false
+        callUpdate.hasVideo = true
         callUpdate.localizedCallerName = data.nameCaller
         
         initCallkitProvider(data)
@@ -358,7 +362,8 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
     
     
     func endCallNotExist(_ data: Data) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(data.duration)) {
+        print("DURATION: \(data.duration)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(data.duration)) {
             let call = self.callManager.callWithUUID(uuid: UUID(uuidString: data.uuid)!)
             if (call != nil && self.answerCall == nil && self.outgoingCall == nil) {
                 self.callEndTimeout(data)
@@ -436,10 +441,25 @@ public class SwiftFlutterCallkitIncomingPlugin: NSObject, FlutterPlugin, CXProvi
         NotificationCenter.default.post(name: AVAudioSession.interruptionNotification, object: self, userInfo: userInfo)
     }
     
-    func configurAudioSession() {
-    // Check if the app should configure the audio session
-    if data?.configureAudioSession == false {
-        return
+    func configurAudioSession(){
+        if data?.configureAudioSession != false {
+            let session = AVAudioSession.sharedInstance()
+            do{
+                try session.setCategory(AVAudioSession.Category.playAndRecord, options: [
+                    .allowBluetoothA2DP,
+                    .duckOthers,
+                    .allowBluetooth,
+                    .defaultToSpeaker,
+                ])
+                
+                try session.setMode(AVAudioSession.Mode.videoChat)
+                try session.setActive(data?.audioSessionActive ?? true)
+                try session.setPreferredSampleRate(data?.audioSessionPreferredSampleRate ?? 44100.0)
+                try session.setPreferredIOBufferDuration(data?.audioSessionPreferredIOBufferDuration ?? 0.005)
+            }catch{
+                print(error)
+            }
+        }
     }
 
     let session = AVAudioSession.sharedInstance()

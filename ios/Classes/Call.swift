@@ -210,7 +210,7 @@ public class Call: NSObject {
             self.maximumCallGroups = ios["maximumCallGroups"] as? Int ?? 2
             self.maximumCallsPerCallGroup = ios["maximumCallsPerCallGroup"] as? Int ?? 1
             self.supportsDTMF = ios["supportsDTMF"] as? Bool ?? true
-            self.supportsHolding = ios["supportsHolding"] as? Bool ?? true
+            self.supportsHolding = ios["supportsHolding"] as? Bool ?? false
             self.supportsGrouping = ios["supportsGrouping"] as? Bool ?? true
             self.supportsUngrouping = ios["supportsUngrouping"] as? Bool ?? true
             self.includesCallsInRecents = ios["includesCallsInRecents"] as? Bool ?? true
@@ -227,7 +227,7 @@ public class Call: NSObject {
             self.maximumCallGroups = args["maximumCallGroups"] as? Int ?? 2
             self.maximumCallsPerCallGroup =  args["maximumCallsPerCallGroup"] as? Int ?? 1
             self.supportsDTMF = args["supportsDTMF"] as? Bool ?? true
-            self.supportsHolding = args["supportsHolding"] as? Bool ?? true
+            self.supportsHolding = args["supportsHolding"] as? Bool ?? false
             self.supportsGrouping = args["supportsGrouping"] as? Bool ?? true
             self.supportsUngrouping = args["supportsUngrouping"] as? Bool ?? true
             self.includesCallsInRecents = args["includesCallsInRecents"] as? Bool ?? true
