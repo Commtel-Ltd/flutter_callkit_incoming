@@ -28,8 +28,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    namespace 'com.example.flutter_callkit_incoming'
     compileSdk 34
+
+    namespace "com.hiennv.flutter_callkit_incoming" 
 
     defaultConfig {
         minSdk 16
