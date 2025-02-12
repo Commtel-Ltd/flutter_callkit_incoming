@@ -30,22 +30,19 @@ apply plugin: 'kotlin-android'
 android {
     compileSdk 34
 
-    if (project.android.hasProperty("namespace")) {
-        namespace "com.hiennv.flutter_callkit_incoming"
-    }
-
-    kotlin {
-        jvmToolchain(17)
-    }
-    
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
     defaultConfig {
         minSdk 16
         targetSdk 34
-
         consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
