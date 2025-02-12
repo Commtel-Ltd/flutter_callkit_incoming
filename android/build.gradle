@@ -30,7 +30,7 @@ apply plugin: 'kotlin-android'
 android {
     compileSdk 34
 
-    namespace "com.hiennv.flutter_callkit_incoming" 
+    namespace "com.hiennv.flutter_callkit_incoming"
 
     defaultConfig {
         minSdk 16
